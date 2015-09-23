@@ -53,7 +53,7 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-if(substr($_SERVER["SERVER_ADDR"], 0, 8) == '192.168.' || $_SERVER["SERVER_ADDR"] == '127.0.0.1') {
+if($_SERVER['HTTP_HOST'] == 'dev.practica3.com') {
 	define('ENVIRONMENT', 'development');
 } else {
 	define('ENVIRONMENT', 'testing');
@@ -70,11 +70,10 @@ if(substr($_SERVER["SERVER_ADDR"], 0, 8) == '192.168.' || $_SERVER["SERVER_ADDR"
 switch (ENVIRONMENT)
 {
 	case 'development':
-		error_reporting(-1);
+	case 'testing':
+		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 	break;
-
-	case 'testing':
 	case 'production':
 		ini_set('display_errors', 0);
 		if (version_compare(PHP_VERSION, '5.3', '>='))

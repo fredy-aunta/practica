@@ -9,6 +9,7 @@ class Welcome extends CI_Controller {
 	}
 
 	public function index(){
-		echo "The logged user is {$this->tank_auth->get_username()}";
+// 		echo "The logged user is {$this->tank_auth->get_username()}";
+		$this->load->view('welcome_message');
 	}
 }

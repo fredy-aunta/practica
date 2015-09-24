@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(__DIR__ . '/phpass-0.1/PasswordHash.php');
+require_once(__DIR__ . '/phpass-0.3/PasswordHash.php');
 
 define('STATUS_ACTIVATED', '1');
 define('STATUS_NOT_ACTIVATED', '0');
@@ -69,7 +69,7 @@ class Tank_auth
 
 					} else {
 						$this->ci->session->set_userdata(array(
-								'user_id'	=> $user->auth_user_id,
+								'user_id'	=> $user->user_id,
 								'username'	=> $user->username,
 								'status'	=> ($user->activated == 1) ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED,
 						));
@@ -79,13 +79,13 @@ class Tank_auth
 
 						} else {												// success
 							if ($remember) {
-								$this->create_autologin($user->auth_user_id);
+								$this->create_autologin($user->user_id);
 							}
 
 							$this->clear_login_attempts($login);
 
 							$this->ci->users->update_login_info(
-									$user->auth_user_id,
+									$user->user_id,
 									$this->ci->config->item('login_record_ip', 'tank_auth'),
 									$this->ci->config->item('login_record_time', 'tank_auth'));
 							return TRUE;
@@ -285,13 +285,13 @@ class Tank_auth
 			if (!is_null($user = $this->ci->users->get_user_by_login($login))) {
 
 				$data = array(
-					'user_id'		=> $user->auth_user_id,
+					'user_id'		=> $user->user_id,
 					'username'		=> $user->username,
 					'email'			=> $user->email,
 					'new_pass_key'	=> md5(rand().microtime()),
 				);
 
-				$this->ci->users->set_password_key($user->auth_user_id, $data['new_pass_key']);
+				$this->ci->users->set_password_key($user->user_id, $data['new_pass_key']);
 				return $data;
 
 			} else {
@@ -347,7 +347,7 @@ class Tank_auth
 
 					// Clear all user's autologins
 					$this->ci->load->model('tank_auth/user_autologin');
-					$this->ci->user_autologin->clear($user->auth_user_id);
+					$this->ci->user_autologin->clear($user->user_id);
 
 					return array(
 						'user_id'		=> $user_id,
@@ -565,7 +565,7 @@ class Tank_auth
 
 						// Login user
 						$this->ci->session->set_userdata(array(
-								'user_id'	=> $user->auth_user_id,
+								'user_id'	=> $user->user_id,
 								'username'	=> $user->username,
 								'status'	=> STATUS_ACTIVATED,
 						));
@@ -578,7 +578,7 @@ class Tank_auth
 						));
 
 						$this->ci->users->update_login_info(
-								$user->auth_user_id,
+								$user->user_id,
 								$this->ci->config->item('login_record_ip', 'tank_auth'),
 								$this->ci->config->item('login_record_time', 'tank_auth'));
 						return TRUE;

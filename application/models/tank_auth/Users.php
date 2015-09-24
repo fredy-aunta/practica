@@ -33,7 +33,7 @@ class Users extends CI_Model
 	 */
 	function get_user_by_id($user_id, $activated)
 	{
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->where('activated', $activated ? 1 : 0);
 
 		$query = $this->db->get($this->table_name);
@@ -150,7 +150,7 @@ class Users extends CI_Model
 	function activate_user($user_id, $activation_key, $activate_by_email)
 	{
 		$this->db->select('1', FALSE);
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		if ($activate_by_email) {
 			$this->db->where('new_email_key', $activation_key);
 		} else {
@@ -163,7 +163,7 @@ class Users extends CI_Model
 
 			$this->db->set('activated', 1);
 			$this->db->set('new_email_key', NULL);
-			$this->db->where('id', $user_id);
+			$this->db->where('user_id', $user_id);
 			$this->db->update($this->table_name);
 
 // 			$this->create_profile($user_id);
@@ -193,7 +193,7 @@ class Users extends CI_Model
 	 */
 	function delete_user($user_id)
 	{
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->delete($this->table_name);
 		if ($this->db->affected_rows() > 0) {
 			$this->delete_profile($user_id);
@@ -214,7 +214,7 @@ class Users extends CI_Model
 	{
 		$this->db->set('new_password_key', $new_pass_key);
 		$this->db->set('new_password_requested', date('Y-m-d H:i:s'));
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 
 		$this->db->update($this->table_name);
 		return $this->db->affected_rows() > 0;
@@ -231,7 +231,7 @@ class Users extends CI_Model
 	function can_reset_password($user_id, $new_pass_key, $expire_period = 900)
 	{
 		$this->db->select('1', FALSE);
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->where('new_password_key', $new_pass_key);
 		$this->db->where('UNIX_TIMESTAMP(new_password_requested) >', time() - $expire_period);
 
@@ -253,7 +253,7 @@ class Users extends CI_Model
 		$this->db->set('password', $new_pass);
 		$this->db->set('new_password_key', NULL);
 		$this->db->set('new_password_requested', NULL);
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->where('new_password_key', $new_pass_key);
 		$this->db->where('UNIX_TIMESTAMP(new_password_requested) >=', time() - $expire_period);
 
@@ -271,7 +271,7 @@ class Users extends CI_Model
 	function change_password($user_id, $new_pass)
 	{
 		$this->db->set('password', $new_pass);
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 
 		$this->db->update($this->table_name);
 		return $this->db->affected_rows() > 0;
@@ -291,7 +291,7 @@ class Users extends CI_Model
 	{
 		$this->db->set($activated ? 'new_email' : 'email', $new_email);
 		$this->db->set('new_email_key', $new_email_key);
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->where('activated', $activated ? 1 : 0);
 
 		$this->db->update($this->table_name);
@@ -310,7 +310,7 @@ class Users extends CI_Model
 		$this->db->set('email', 'new_email', FALSE);
 		$this->db->set('new_email', NULL);
 		$this->db->set('new_email_key', NULL);
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->where('new_email_key', $new_email_key);
 
 		$this->db->update($this->table_name);
@@ -334,7 +334,7 @@ class Users extends CI_Model
 		if ($record_ip)		$this->db->set('last_ip', $this->input->ip_address());
 		if ($record_time)	$this->db->set('last_login', date('Y-m-d H:i:s'));
 
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->update($this->table_name);
 	}
 
@@ -347,7 +347,7 @@ class Users extends CI_Model
 	 */
 	function ban_user($user_id, $reason = NULL)
 	{
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->update($this->table_name, array(
 			'banned'		=> 1,
 			'ban_reason'	=> $reason,
@@ -362,7 +362,7 @@ class Users extends CI_Model
 	 */
 	function unban_user($user_id)
 	{
-		$this->db->where('id', $user_id);
+		$this->db->where('user_id', $user_id);
 		$this->db->update($this->table_name, array(
 			'banned'		=> 0,
 			'ban_reason'	=> NULL,
